@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 3.5)
-
+cmake_minimum_required(VERSION 3.23)
 project(tinyraycaster)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -std=c++14")
-set(source_dir "${PROJECT_SOURCE_DIR}/src/")
+set(CMAKE_CXX_STANDARD 20)
 
-file(GLOB source_files "${source_dir}/*.cpp")
+file(GLOB SOURCES src/*.cpp src/*.hpp src/*.h)
 
-add_executable(tinyraycaster ${source_files})
+find_package(raylib 4.2 REQUIRED)
+
+add_executable(tinyraycaster ${SOURCES})
+
+target_link_libraries(tinyraycaster raylib)

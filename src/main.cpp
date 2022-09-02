@@ -1,7 +1,17 @@
-#include <cstdio>
+#include "raylib.h"
 
 int main() {
-    printf("hello world\n");
+    InitWindow(1280, 720, "tinyraycaster");
+
+    while (!WindowShouldClose()) {
+        BeginDrawing();
+
+        ClearBackground((Color){11, 11, 11, 255});
+
+        EndDrawing();
+    }
+
+    CloseWindow();
 
     return 0;
 }
