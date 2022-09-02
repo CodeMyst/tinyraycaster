@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cassert>
 #include <algorithm>
+#include <cmath>
 #include "raylib.h"
 
 enum Tile {
@@ -66,19 +67,47 @@ int main() {
     auto it = std::find(map.begin(), map.end(), Tile::Player);
     assert(it != map.end());
 
-    int playerX = (int) (it - map.begin()) % width;
-    int playerY = (int) (it - map.begin()) / width;
+    float playerX = (float) ((int) (it - map.begin()) % width);
+    float playerY = (float) (it - map.begin()) / float(width);
+
+    float playerAngle = 1.5;
 
     InitWindow(1280, 720, "tinyraycaster");
+    SetTraceLogLevel(LOG_NONE);
 
     while (!WindowShouldClose()) {
         BeginDrawing();
 
         ClearBackground((Color){11, 11, 11, 255});
 
+        SetTargetFPS(75);
+        DrawFPS(1280 - 100, 0);
+
         drawMap(width, height, map);
 
+        // draw player on map
         DrawRectangle(playerX * 10 + 2, playerY * 10 + 2, 5, 5, BLUE);
+
+        // draw rays on map
+        float c = 0;
+        float cx = 0;
+        float cy = 0;
+        while (c < 20) {
+            cx = playerX + c * std::cos(playerAngle);
+            cy = playerY + c * std::sin(playerAngle);
+
+            if (cx < 0 || cx > width ||
+                cy < 0 || cy > height ||
+                map.at(int(cx) + int(cy) * width) == Tile::Wall) break;
+
+            c += 0.05;
+        }
+
+        DrawLine(playerX * 10 + 5, playerY * 10 + 5,
+                 cx * 10, cy * 10, RED);
+
+        if (IsKeyDown(KEY_A)) playerAngle -= 0.5f * GetFrameTime();
+        else if (IsKeyDown(KEY_D)) playerAngle += 0.5f * GetFrameTime();
 
         EndDrawing();
     }
