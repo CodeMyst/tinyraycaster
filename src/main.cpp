@@ -87,11 +87,13 @@ int main() {
         drawMap(width, height, map);
 
         // draw player on map
-        DrawRectangle(playerX * 10 + 2, playerY * 10 + 2, 5, 5, BLUE);
+        DrawRectangle(playerX * 10 - 2, playerY * 10 - 2, 5, 5, BLUE);
+
+        const int numRays = 512;
 
         // draw rays on map
-        for (size_t i = 0; i < 512; i++) {
-            float angle = playerAngle - fov / 2 + fov * i / float(512);
+        for (size_t i = 0; i < numRays; i++) {
+            float angle = playerAngle - fov / 2 + fov * i / float(numRays);
 
             float c = 0;
             float cx = 0;
@@ -105,10 +107,9 @@ int main() {
                     map.at(int(cx) + int(cy) * width) == Tile::Wall) break;
 
                 c += 0.05;
-            }
 
-            DrawLine(playerX * 10 + 5, playerY * 10 + 5,
-                    cx * 10, cy * 10, RED);
+                DrawPixel(cx * 10, cy * 10, RED);
+            }
         }
 
         if (IsKeyDown(KEY_A)) playerAngle -= 0.5f * GetFrameTime();
