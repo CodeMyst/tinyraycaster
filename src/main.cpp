@@ -117,8 +117,19 @@ int main() {
             }
         }
 
-        if (IsKeyDown(KEY_A)) playerAngle -= 0.5f * GetFrameTime();
-        else if (IsKeyDown(KEY_D)) playerAngle += 0.5f * GetFrameTime();
+        const float movSpeed = 0.1;
+        const float lookSpeed = 1;
+
+        if (IsKeyDown(KEY_A)) playerAngle -= lookSpeed * GetFrameTime();
+        else if (IsKeyDown(KEY_D)) playerAngle += lookSpeed * GetFrameTime();
+
+        if (IsKeyDown(KEY_W)) {
+            playerX += movSpeed * std::cos(playerAngle);
+            playerY += movSpeed * std::sin(playerAngle);
+        } else if (IsKeyDown(KEY_S)) {
+            playerX -= movSpeed * std::cos(playerAngle);
+            playerY -= movSpeed * std::sin(playerAngle);
+        }
 
         EndDrawing();
     }
