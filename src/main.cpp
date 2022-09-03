@@ -89,7 +89,7 @@ int main() {
         // draw player on map
         DrawRectangle(playerX * 10 - 2, playerY * 10 - 2, 5, 5, BLUE);
 
-        const int numRays = 512;
+        const int numRays = 640;
 
         // draw rays on map
         for (size_t i = 0; i < numRays; i++) {
@@ -104,11 +104,16 @@ int main() {
 
                 if (cx < 0 || cx > width ||
                     cy < 0 || cy > height ||
-                    map.at(int(cx) + int(cy) * width) == Tile::Wall) break;
+                    map.at(int(cx) + int(cy) * width) == Tile::Wall) {
 
-                c += 0.05;
+                    float colHeight = 720.0 / c;
+                    DrawRectangle(i * 2, 720 / 2 - colHeight / 2, 2, colHeight, (Color){204, 204, 204, 255});
+                    break;
+                }
 
                 DrawPixel(cx * 10, cy * 10, RED);
+
+                c += 0.05;
             }
         }
 
