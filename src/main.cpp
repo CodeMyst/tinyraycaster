@@ -93,7 +93,7 @@ int main() {
 
         // draw rays on map
         for (size_t i = 0; i < numRays; i++) {
-            float angle = playerAngle - fov / 2 + fov * i / float(numRays);
+            float angle = playerAngle - fov / 2.0 + fov * i / float(numRays);
 
             float c = 0;
             float cx = 0;
@@ -106,8 +106,9 @@ int main() {
                     cy < 0 || cy > height ||
                     map.at(int(cx) + int(cy) * width) == Tile::Wall) {
 
-                    float colHeight = 720.0 / c;
-                    DrawRectangle(i * 2, 720 / 2 - colHeight / 2, 2, colHeight, (Color){204, 204, 204, 255});
+                    double colHeight = 720.0 / (c * std::cos(angle - playerAngle));
+                    double y = 720.0 / 2.0 - colHeight / 2.0;
+                    DrawRectangle(i * 2, y, 2, colHeight, (Color){204, 204, 204, 255});
                     break;
                 }
 
