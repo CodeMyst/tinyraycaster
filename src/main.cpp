@@ -71,7 +71,7 @@ int main() {
     float playerY = (float) (it - map.begin()) / float(width);
 
     float playerAngle = 1.5;
-    float fov = 1;
+    float fov = M_PI / 3.0;
 
     InitWindow(1280, 720, "tinyraycaster");
     SetTraceLogLevel(LOG_NONE);
@@ -89,37 +89,40 @@ int main() {
         // draw player on map
         DrawRectangle(playerX * 10 - 2, playerY * 10 - 2, 5, 5, BLUE);
 
-        const int numRays = 640;
+        const int numRays = 320;
 
         // draw rays on map
         for (size_t i = 0; i < numRays; i++) {
             float angle = playerAngle - fov / 2.0 + fov * i / float(numRays);
 
-            float c = 0;
+            double c = 0;
             float cx = 0;
             float cy = 0;
             while (c < 20) {
                 cx = playerX + c * std::cos(angle);
                 cy = playerY + c * std::sin(angle);
 
+                int idx = int(cx) + int(cy) * width;
+
                 if (cx < 0 || cx > width ||
                     cy < 0 || cy > height ||
-                    map.at(int(cx) + int(cy) * width) == Tile::Wall) {
+                    idx > map.size() - 1 ||
+                    map.at(idx) == Tile::Wall) {
 
                     double colHeight = 720.0 / (c * std::cos(angle - playerAngle));
                     double y = 720.0 / 2.0 - colHeight / 2.0;
-                    DrawRectangle(i * 2, y, 2, colHeight, (Color){204, 204, 204, 255});
+                    DrawRectangle(i * 4, y, 4, colHeight, (Color){208, 208, 208, 255});
                     break;
                 }
 
                 DrawPixel(cx * 10, cy * 10, RED);
 
-                c += 0.05;
+                c += 0.01;
             }
         }
 
         const float movSpeed = 0.1;
-        const float lookSpeed = 1;
+        const float lookSpeed = 1.5;
 
         if (IsKeyDown(KEY_A)) playerAngle -= lookSpeed * GetFrameTime();
         else if (IsKeyDown(KEY_D)) playerAngle += lookSpeed * GetFrameTime();
