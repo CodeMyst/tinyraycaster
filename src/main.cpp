@@ -125,8 +125,6 @@ int main() {
 
         ClearBackground((Color){11, 11, 11, 255});
 
-        DrawFPS(1280 - 100, 0);
-
         const int numRays = 320;
 
         // draw rays on map
@@ -182,6 +180,21 @@ int main() {
 
                 c += 0.01;
             }
+
+            for (Sprite sprite : sprites) {
+                float spriteDir = std::atan2(sprite.y - playerY, sprite.x - playerX);
+
+                while (spriteDir - playerAngle > M_PI) spriteDir -= 2 * M_PI;
+                while (spriteDir - playerAngle < -M_PI) spriteDir += 2 * M_PI;
+
+                float spriteDist = std::sqrt(std::pow(playerX - sprite.x, 2) + std::pow(playerY - sprite.y, 2));
+                int spriteScreenSize = std::min(2000, static_cast<int>(720 / spriteDist));
+
+                int hOffset = (spriteDir - playerAngle) * 1280 / fov + 1280 / 2 - spriteScreenSize / 2;
+                int vOffset = 720 / 2 - spriteScreenSize / 2;
+
+                DrawRectangle(hOffset, vOffset, spriteScreenSize, spriteScreenSize, (Color){0, 0, 0, 255});
+            }
         }
 
         drawMap(width, height, map, sprites);
@@ -202,6 +215,8 @@ int main() {
             playerX -= movSpeed * std::cos(playerAngle);
             playerY -= movSpeed * std::sin(playerAngle);
         }
+
+        DrawFPS(1280 - 100, 0);
 
         EndDrawing();
     }
