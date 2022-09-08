@@ -151,7 +151,24 @@ int main() {
                         col = texIdxToCol(texIdx);
                     }
 
-                    DrawRectangle(i * 4, y, 4, colHeight, col);
+                    float hitX = cx - std::floor(cx + 0.5);
+                    float hitY = cy - std::floor(cy + 0.5);
+                    int texCoord = hitX * 64;
+
+                    // check if vertical wall
+                    if (std::abs(hitY) > std::abs(hitX)) {
+                        texCoord = hitY * 64;
+                    }
+
+                    // make sure not negative
+                    if (texCoord < 0) {
+                        texCoord += 64;
+                    }
+
+                    assert(texCoord >= 0 && texCoord < 64);
+
+                    DrawTexturePro(tex, (Rectangle){(64 * map.at(idx).texIdx) + texCoord, 0, 1, 64}, (Rectangle){i * 4, y, 4, colHeight}, (Vector2){0, 0}, 0, WHITE);
+
                     break;
                 }
 
@@ -161,7 +178,7 @@ int main() {
             }
         }
 
-        const float movSpeed = 0.1;
+        const float movSpeed = 0.05;
         const float lookSpeed = 1.5;
 
         if (IsKeyDown(KEY_A)) playerAngle -= lookSpeed * GetFrameTime();
